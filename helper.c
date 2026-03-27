@@ -19,8 +19,10 @@ void trim(char *str) {
     str[j] = '\0';
 }
 
-void process_input(char *input) {
+void process_input(char *input, int mode) {
     Token tokens[MAX_TOKENS];
+    int check_variable= 0;
+    int i;
     /* split by ',' & gets the first chunk */
     char *token = strtok(input, ",");
 
@@ -34,12 +36,37 @@ void process_input(char *input) {
         
         }
 
+
+        for (i = 0; tokens[i].type != TOKEN_END; i++){
+            if (tokens[i].type == TOKEN_IDENTIFIER) {
+                    check_variable = 1;
+                    break;
+                } 
+        }
+
+        if (mode == 1 && check_variable) {
+            printf("Invalid!! Variables not allowed in Simple Calculator mode\n");
+            token = strtok(NULL, ",");
+            continue;  /* skip this expression, move on*/
+        }
+
+        
+        if (mode == 1) {
+            printf("[Mode: Simple Calculator]\n");
+        }
+        else if (mode == 2) {
+            printf("[Mode: Differentiate]\n");
+        }
+        else if (mode == 3) {
+            printf("[Mode: Graph]\n");
+        }
+
         /*next token after that (finds the next ',' )*/
         token = strtok(NULL, ",");
     }
 }
 
-int read_input(int argc, char *argv[], char *buffer) {
+int read_input(int argc, char *argv[], char *buffer, int mode) {
     
     /*if file provided, read file -> loop thru each line and process each line*/
     if (argc > 1) {
@@ -52,7 +79,7 @@ int read_input(int argc, char *argv[], char *buffer) {
         while (fgets(buffer, MAX_INPUT, file)) {
             buffer[strcspn(buffer, "\n")] = '\0';
 
-            process_input(buffer);   
+            process_input(buffer, mode);   
         }
         fclose(file);
     }
@@ -66,7 +93,7 @@ int read_input(int argc, char *argv[], char *buffer) {
             return 0;
         }
         buffer[strcspn(buffer, "\n")] = '\0';
-        process_input(buffer); 
+        process_input(buffer, mode); 
     }
     return 1;
 }
