@@ -4,8 +4,6 @@
 #define MAX_INPUT 256
 #define MAX_TOKENS 128
 
-int read_input(int argc, char *argv[], char *buffer, int mode);
-void process_input(char *input, int mode);
 void trim(char *str);
 
 typedef enum {
@@ -24,6 +22,8 @@ typedef struct {
     char value[32];
 } Token;
 
+int read_input(int argc, char *argv[], char *buffer, int mode, Token tokens[]);
+void process_input(char *input, int mode, Token tokens[]);
 void print_tokens(Token tokens[]);
 int tokenize(const char *input, Token tokens[]);
 #endif

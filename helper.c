@@ -19,8 +19,8 @@ void trim(char *str) {
     str[j] = '\0';
 }
 
-void process_input(char *input, int mode) {
-    Token tokens[MAX_TOKENS];
+void process_input(char *input, int mode, Token tokens[]) {
+    /* Token tokens[MAX_TOKENS]; */
     int check_variable= 0;
     int i;
     /* split by ',' & gets the first chunk */
@@ -66,7 +66,7 @@ void process_input(char *input, int mode) {
     }
 }
 
-int read_input(int argc, char *argv[], char *buffer, int mode) {
+int read_input(int argc, char *argv[], char *buffer, int mode, Token tokens[]) {
     
     /*if file provided, read file -> loop thru each line and process each line*/
     if (argc > 1) {
@@ -79,7 +79,7 @@ int read_input(int argc, char *argv[], char *buffer, int mode) {
         while (fgets(buffer, MAX_INPUT, file)) {
             buffer[strcspn(buffer, "\n")] = '\0';
 
-            process_input(buffer, mode);   
+            process_input(buffer, mode, tokens);   
         }
         fclose(file);
     }
@@ -93,7 +93,7 @@ int read_input(int argc, char *argv[], char *buffer, int mode) {
             return 0;
         }
         buffer[strcspn(buffer, "\n")] = '\0';
-        process_input(buffer, mode); 
+        process_input(buffer, mode, tokens); 
     }
     return 1;
 }
