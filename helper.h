@@ -4,6 +4,8 @@
 #define MAX_INPUT 256
 #define MAX_TOKENS 128
 
+int isAlpha(char c);
+
 void trim(char *str);
 
 typedef enum {
