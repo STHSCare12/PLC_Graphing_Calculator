@@ -5,6 +5,7 @@
 #include "parser.h"
 #include "ast.h"
 #include "evaluator.h"
+#include "dualUtils.h"
 
 int main(int argc, char *argv[]) {
     char input[256];
@@ -62,6 +63,42 @@ int main(int argc, char *argv[]) {
         if (choice == 1) {
             double result = evaluate_expression(ast);
             printf("Result: %f\n", result);
+        }
+        /* Mode 2: Differentiate */
+        if (choice == 2) {
+            char equation[256];
+            printf("Enter function (example: y=sin(x)): ");
+            if (!fgets(equation, sizeof(equation), stdin)) {
+                printf("Error reading equation\n");
+                continue;
+            }
+            equation[strcspn(equation, "\n")] = '\0';
+            char *rhs = strchr(equation, '='); /* Extract right-hand side if user types y=... */
+            if (rhs) {
+                rhs++; /* move past '=' */
+                while (*rhs == ' ') rhs++; /* skip spaces */
+            } else {
+                rhs = equation;
+            }
+
+            /* Tokenize the equation */
+            memset(tokens, 0, sizeof(tokens));
+            process_equation(rhs, choice, tokens);
+            ASTNode* ast = buildAST(tokens, choice);
+            if (!ast) {
+                printf("Error: Failed to build AST\n");
+                continue;
+            }
+
+            double x_value;
+            printf("Enter value of x to evaluate derivative at: ");
+            scanf("%lf", &x_value);
+            getchar(); /* consume newline */
+
+            Dual result = evaluate_expression_dual(ast, x_value);
+
+            printf("f(x) = %f\n", result.real);
+            printf("f'(x) = %f\n", result.dual);
         }
         printf("\n");
     }

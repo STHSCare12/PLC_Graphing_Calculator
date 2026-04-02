@@ -44,6 +44,7 @@ void freeAST(ASTNode* node) {
 
 /* Declarations */
 ASTNode* parseFactor();
+ASTNode* parseUnaryMinus();
 ASTNode* parsePower();
 ASTNode* parseTerm();
 ASTNode* parseExpression();
@@ -81,7 +82,7 @@ ASTNode* parseFactor() {
                 return NULL;
             }
             next();
-            node->left = parseExpression();
+            node->left = parseUnaryMinus();
             if (!node->left) {
                 free(node);
                 return NULL;
@@ -90,17 +91,16 @@ ASTNode* parseFactor() {
             if (calcMode == 1 && containsVariable(node->left)) {
                 printf("Invalid!! Function arguments must be numeric constants in Simple Calculator mode\n");
                 freeAST(node->left);
-                free(node);
+                /* free(node); */
                 return NULL;
             }
             if (current().type != TOKEN_RPAREN) {
                 printf("Error: Expected ')'\n");
                 freeAST(node);
-                free(node);
+                /* free(node); */
                 return NULL;
             }
             next();
-            node->right = NULL;
             return node;
         }
 
@@ -112,11 +112,11 @@ ASTNode* parseFactor() {
             }
             ASTNode* node = malloc(sizeof(ASTNode));
             node->type = 'v';
-            node->left = node->right = NULL;
             next();
             return node;
         }
-
+        printf("Error: Unknown identifier '%s'\n", t.value);
+        return NULL;
     }
 
     /* Parentheses */
@@ -126,13 +126,13 @@ ASTNode* parseFactor() {
         if (!node) return NULL;
         if (current().type != TOKEN_RPAREN) {
             printf("Error: Expected ')'\n");
-            freeAST(node->left);
+            freeAST(node);
             return NULL;
         }
         next();
         return node;
     }
-    printf("Error: Invalid factor (unknown identifier '%s')\n", t.value);
+    printf("Error: Invalid factor\n");
     return NULL;
 }
 

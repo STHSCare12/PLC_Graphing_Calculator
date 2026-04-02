@@ -34,6 +34,17 @@ void process_equation(char *equation, int mode, Token tokens[]) {
     trim(safe);
     if (strlen(safe) == 0) return;
 
+    /* Skip LHS in Mode 2: Differentiate */
+    if (mode == 2) {
+        char *rhs = strchr(safe, '=');
+        if (rhs) {
+            rhs++; /* move past '=' */
+            while (*rhs == ' ') rhs++; /* skip leading spaces */
+            strncpy(safe, rhs, MAX_INPUT - 1);
+            safe[MAX_INPUT - 1] = '\0';
+        }
+    }
+
     printf("Equation: %s\n", safe);
     memset(tokens, 0, sizeof(Token) * MAX_TOKENS);
     tokenize(safe, tokens);

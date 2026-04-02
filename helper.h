@@ -25,6 +25,7 @@ typedef struct {
 } Token;
 
 int read_input(int argc, char *argv[], char *buffer, int mode, Token tokens[]);
+void process_equation(char *equation, int mode, Token tokens[]);
 void process_input(char *input, int mode, Token tokens[]);
 void print_tokens(Token tokens[]);
 int tokenize(const char *input, Token tokens[]);

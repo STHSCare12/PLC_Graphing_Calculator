@@ -45,3 +45,43 @@ double evaluate_expression(ASTNode* node) {
     }
     return 0;
 }
+
+Dual evaluate_expression_dual(ASTNode* node, double var_value) {
+    if (!node) return make_dual(0.0f, 0.0f);
+    switch (node->type)
+    {
+        case 'n':
+            return make_dual(node->value, 0.0f);
+        case 'v':
+            return make_dual(var_value, 1.0f);
+        case '+':
+            return DUAL_ADD.apply(evaluate_expression_dual(node->left, var_value), evaluate_expression_dual(node->right, var_value));
+        case '-':
+            return DUAL_SUB.apply(evaluate_expression_dual(node->left, var_value), evaluate_expression_dual(node->right, var_value));
+        case '*':
+            return DUAL_MUL.apply(evaluate_expression_dual(node->left, var_value), evaluate_expression_dual(node->right, var_value));
+        case '/':
+            return DUAL_DIV.apply(evaluate_expression_dual(node->left, var_value), evaluate_expression_dual(node->right, var_value));
+        case '^':
+            return DUAL_POW.apply(evaluate_expression_dual(node->left, var_value), evaluate_expression_dual(node->right, var_value));
+        case 'f':
+            if (strcmp(node->func, "sin") == 0) {
+                return DUAL_SIN.apply(evaluate_expression_dual(node->left, var_value));
+            } else if (strcmp(node->func, "cos") == 0) {
+                return DUAL_COS.apply(evaluate_expression_dual(node->left, var_value));
+            } else if (strcmp(node->func, "tan") == 0) {
+                return DUAL_TAN.apply(evaluate_expression_dual(node->left, var_value));
+            } else if (strcmp(node->func, "exp") == 0) {
+                return DUAL_EXP.apply(evaluate_expression_dual(node->left, var_value));
+            } else if (strcmp(node->func, "log") == 0) {
+                return DUAL_LOG.apply(evaluate_expression_dual(node->left, var_value));
+            }
+            break;
+        case 'u':
+            Dual arg = evaluate_expression_dual(node->left, var_value);
+            return make_dual(-arg.real, -arg.dual);
+        default:
+            printf("Error: Unknown node type '%c'\n", node->type);
+            return make_dual(0.0f, 0.0f);
+    }
+}
