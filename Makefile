@@ -5,7 +5,8 @@ CC = gcc
 CFLAGS = -ansi -pedantic -Wall -Werror
 
 # Project files
-SOURCES = main.c helper.c lexer.c parser.c
+# SOURCES = main.c helper.c lexer.c parser.c
+SOURCES = main.c helper.c lexer.c ast.c evaluator.c dualUtils.c
 OBJECTS = $(SOURCES:.c=.o)
 TARGET = run
 

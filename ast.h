@@ -13,5 +13,6 @@ typedef struct ASTNode {
 
 ASTNode* buildAST(Token tokens[], int mode);
 void printAST(ASTNode* node, int depth);
+void freeAST(ASTNode* node);
 
 #endif

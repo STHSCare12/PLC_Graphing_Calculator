@@ -71,8 +71,10 @@ ASTNode* parseFactor() {
             || strcmp(t.value, "tan") == 0 || strcmp(t.value, "exp") == 0 
             || strcmp(t.value, "log") == 0) {
 
-            ASTNode* node = (ASTNode*) calloc(1, sizeof(ASTNode));
+            ASTNode* node = (ASTNode*) malloc(sizeof(ASTNode));
             node->type = 'f';
+            node->left = node->right = NULL;
+            node->value = 0;
             strncpy(node->func, t.value, sizeof(node->func)-1);
             node->func[sizeof(node->func)-1] = '\0';
             next();
@@ -82,7 +84,7 @@ ASTNode* parseFactor() {
                 return NULL;
             }
             next();
-            node->left = parseUnaryMinus();
+            node->left = parseExpression();
             if (!node->left) {
                 free(node);
                 return NULL;
@@ -107,11 +109,13 @@ ASTNode* parseFactor() {
         /* Variable: x */
         if (strcmp(t.value, "x") == 0) {
             if (calcMode == 1) {
-                // printf("Invalid!! Variables not allowed in Simple Calculator mode\n");
+                /* printf("Invalid!! Variables not allowed in Simple Calculator mode\n"); */
                 return NULL;
             }
             ASTNode* node = malloc(sizeof(ASTNode));
             node->type = 'v';
+            node->left = node->right = NULL;
+            node->value = 0;
             next();
             return node;
         }
@@ -153,7 +157,7 @@ ASTNode* parseUnaryMinus() {
 
 /* Parse a Power */
 ASTNode* parsePower() {
-    ASTNode* left = parseFactor();
+    ASTNode* left = parseUnaryMinus();
     while (current().type != TOKEN_END && current().type == TOKEN_OPERATOR && current().value[0] == '^') {
         next();
         ASTNode* right = parseUnaryMinus();
@@ -161,6 +165,7 @@ ASTNode* parsePower() {
         node->type = '^';
         node->left = left;
         node->right = right;
+        node->value = 0;
         left = node;
     }
     return left;
@@ -177,6 +182,7 @@ ASTNode* parseTerm() {
         node->type = op;
         node->left = left;
         node->right = right;
+        node->value = 0;
         left = node;
     }
     return left;
@@ -193,6 +199,7 @@ ASTNode* parseExpression() {
         node->type = op;
         node->left = left;
         node->right = right;
+        node->value = 0;
         left = node;
     }
     return left;

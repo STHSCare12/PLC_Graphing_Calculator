@@ -10,7 +10,7 @@
 int main(int argc, char *argv[]) {
     char input[256];
     char line[128];
-    int choice;
+    int choice = 0;
     Token tokens[MAX_TOKENS];
 
     while (choice != 4) {
@@ -63,42 +63,38 @@ int main(int argc, char *argv[]) {
         if (choice == 1) {
             double result = evaluate_expression(ast);
             printf("Result: %f\n", result);
+            /* Free memory*/
+            freeAST(ast);
         }
+
         /* Mode 2: Differentiate */
         if (choice == 2) {
-            char equation[256];
-            printf("Enter function (example: y=sin(x)): ");
-            if (!fgets(equation, sizeof(equation), stdin)) {
-                printf("Error reading equation\n");
-                continue;
-            }
-            equation[strcspn(equation, "\n")] = '\0';
-            char *rhs = strchr(equation, '='); /* Extract right-hand side if user types y=... */
-            if (rhs) {
-                rhs++; /* move past '=' */
-                while (*rhs == ' ') rhs++; /* skip spaces */
-            } else {
-                rhs = equation;
-            }
+            printf("y = ");
+            print_expression(ast);
+            printf("\n");
+            ASTNode* derivative = differentiate(ast);
+            derivative = simplify(derivative);
 
-            /* Tokenize the equation */
-            memset(tokens, 0, sizeof(tokens));
-            process_equation(rhs, choice, tokens);
-            ASTNode* ast = buildAST(tokens, choice);
-            if (!ast) {
-                printf("Error: Failed to build AST\n");
-                continue;
-            }
+            printf("dy/dx = ");
+            print_expression(derivative);
+            printf("\n");
 
-            double x_value;
-            printf("Enter value of x to evaluate derivative at: ");
-            scanf("%lf", &x_value);
-            getchar(); /* consume newline */
+            double x;
+            printf("Enter value of x: ");
+            scanf("%lf", &x);
+            getchar();
 
-            Dual result = evaluate_expression_dual(ast, x_value);
+            CURRENT_X = x;
 
-            printf("f(x) = %f\n", result.real);
-            printf("f'(x) = %f\n", result.dual);
+            double y_val = evaluate_expression(ast);
+            double dy_val = evaluate_expression(derivative);
+
+            printf("y(%g) = %f\n", x, y_val);
+            printf("dy/dx(%g) = %f\n", x, dy_val);
+
+            /* Free memory*/
+            freeAST(ast);
+            freeAST(derivative);
         }
         printf("\n");
     }
