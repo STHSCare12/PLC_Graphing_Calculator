@@ -1,6 +1,8 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include "helper.h"
+
 #define MAX_STRING_LENGTH 1024
 #define MAX_SYMBOLS 29
 #define MAX_RULES 36

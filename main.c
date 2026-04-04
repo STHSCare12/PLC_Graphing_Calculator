@@ -6,6 +6,7 @@
 #include "ast.h"
 #include "evaluator.h"
 #include "dualUtils.h"
+#include "graph.h"
 
 int main(int argc, char *argv[]) {
     char input[256];
@@ -96,6 +97,19 @@ int main(int argc, char *argv[]) {
             freeAST(ast);
             freeAST(derivative);
         }
+
+        /* Mode 3: Show Graphs */
+        if (choice == 3) {
+            printf("y = ");
+            print_expression(ast);
+            printf("\n");
+
+            plot_graph(ast);
+
+            /* Free memory*/
+            freeAST(ast);
+        }
+
         printf("\n");
     }
 
