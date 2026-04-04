@@ -10,9 +10,7 @@ typedef struct Dual {
 } Dual;
 
 /* Create a dual number */
-static inline Dual make_dual(float real_part, float dual_part) {
-    return (Dual){real_part, dual_part};
-}
+Dual make_dual(float real_part, float dual_part);
 
 /* Unary operation */
 Dual dual_sin(Dual x);

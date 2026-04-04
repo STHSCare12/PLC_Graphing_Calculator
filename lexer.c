@@ -21,7 +21,6 @@ int tokenize(const char *input, Token tokens[]) {
         if (isdigit(input[i]) || input[i] == '.') { /*if its a number or decimal */
             int j = 0;
             while (isdigit(input[i]) || input[i] == '.') {
-                // tokens[pos].value[j++] = input[i++];
                 if (j < 31) tokens[pos].value[j++] = input[i];
                 i++;
             }
@@ -35,7 +34,6 @@ int tokenize(const char *input, Token tokens[]) {
         if (isalpha(input[i])) {
             int j = 0;
             while (isalnum(input[i])) { /*x1 is counted*/
-                // tokens[pos].value[j++] = input[i++];
                 if (j < 31) tokens[pos].value[j++] = input[i];
                 i++;
             }

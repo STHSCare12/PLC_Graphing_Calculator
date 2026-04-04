@@ -74,56 +74,11 @@ void process_equation(char *equation, int mode, Token tokens[]) {
 }
 
 void process_input(char *input, int mode, Token tokens[]) {
-    /* Token tokens[MAX_TOKENS]; */
-    /* int i; */
-    /* split by ',' & gets the first chunk */
-    /* char *token = strtok(input, ","); */
-
-    // while (token != NULL) {
-    //     trim(token);
-
-    //     if (strlen(token) > 0) {
-    //         printf("Equation: %s\n", token);
-    //         tokenize(token, tokens);
-    //         print_tokens(tokens);
-        
-    //     }
-
-    //     int check_variable= 0;
-    //     for (i = 0; tokens[i].type != TOKEN_END; i++){
-    //         if (tokens[i].type == TOKEN_IDENTIFIER) {
-    //                 /* Only single letter are considered as a variable */
-    //                 if (strlen(tokens[i].value) == 1 && isAlpha(tokens[i].value[0])) {
-    //                     check_variable = 1;
-    //                     break;
-    //                 }
-    //             } 
-    //     }
-
-    //     if (mode == 1 && check_variable) {
-    //         printf("Invalid!! Variables not allowed in Simple Calculator mode\n");
-    //         token = strtok(NULL, ",");
-    //         continue;  /* skip this expression, move on*/
-    //     }
-
-        
-    //     if (mode == 1) {
-    //         printf("[Mode: Simple Calculator]\n");
-    //     }
-    //     else if (mode == 2) {
-    //         printf("[Mode: Differentiate]\n");
-    //     }
-    //     else if (mode == 3) {
-    //         printf("[Mode: Graph]\n");
-    //     }
-
-    //     /*next token after that (finds the next ',' )*/
-    //     token = strtok(NULL, ",");
-    // }
+    char *equation;
     char buffer[MAX_INPUT];
     strcpy(buffer, input); /* copy input so strtok doesn't modify original */
 
-    char *equation = strtok(buffer, ",");
+    equation = strtok(buffer, ",");
     while (equation != NULL) {
         char trimmed[MAX_INPUT];
         strncpy(trimmed, equation, MAX_INPUT - 1);

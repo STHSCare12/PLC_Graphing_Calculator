@@ -13,6 +13,11 @@ int main(int argc, char *argv[]) {
     char line[128];
     int choice = 0;
     Token tokens[MAX_TOKENS];
+    ASTNode* ast;
+    ASTNode* derivative;
+    double x;
+    double y_val;
+    double dy_val;
 
     while (choice != 4) {
         printf("=== Graphic Calculator ===\n");
@@ -23,8 +28,8 @@ int main(int argc, char *argv[]) {
 
         while (1) {
             printf("Enter choice: ");
-            // scanf("%d", &choice);
-            // getchar();
+            /* scanf("%d", &choice); */
+            /* getchar(); */
             if (!fgets(line, sizeof(line), stdin)) {
                 printf("Error reading input\n");
                 continue;
@@ -46,12 +51,12 @@ int main(int argc, char *argv[]) {
             return 1;
         }
 
-        // if (!parse(tokens, choice)) {
-        //     return 1;
-        // }
+        /* if (!parse(tokens, choice)) {
+             return 1;
+         } */
 
         /* Build AST */
-        ASTNode* ast = buildAST(tokens, choice);   // build AST from tokens
+        ast = buildAST(tokens, choice); 
         if (!ast) {
             printf("Error: Failed to build AST\n");
             continue;
@@ -73,22 +78,21 @@ int main(int argc, char *argv[]) {
             printf("y = ");
             print_expression(ast);
             printf("\n");
-            ASTNode* derivative = differentiate(ast);
+            derivative = differentiate(ast);
             derivative = simplify(derivative);
 
             printf("dy/dx = ");
             print_expression(derivative);
             printf("\n");
 
-            double x;
             printf("Enter value of x: ");
             scanf("%lf", &x);
             getchar();
 
             CURRENT_X = x;
 
-            double y_val = evaluate_expression(ast);
-            double dy_val = evaluate_expression(derivative);
+            y_val = evaluate_expression(ast);
+            dy_val = evaluate_expression(derivative);
 
             printf("y(%g) = %f\n", x, y_val);
             printf("dy/dx(%g) = %f\n", x, dy_val);

@@ -53,8 +53,9 @@ double evaluate_expression(ASTNode* node) {
 
 /* Copy AST node */
 ASTNode* copy_ast(ASTNode* node) {
+    ASTNode* n;
     if (!node) return NULL;
-    ASTNode* n = malloc(sizeof(ASTNode));
+    n = malloc(sizeof(ASTNode));
     n->type = node->type;
     n->value = node->value;
     strcpy(n->func, node->func);
@@ -121,8 +122,8 @@ ASTNode* differentiate(ASTNode* node) {
                 /* d/dx (exp(x)) = exp(x) * df/dx */
                 return create_node('*', 0, NULL, create_node('f', 0, "exp", copy_ast(node->left), NULL), differentiate(node->left)); 
             } else if (strcmp(node->func, "log") == 0) {
-                /* d/dx (log(x)) = (1/x) * df/dx */
-                return create_node('*', 0, NULL, create_node('/', 0, NULL, create_node('n', 1, NULL, NULL, NULL), copy_ast(node->left)), differentiate(node->left)); 
+                /* d/dx log10(x) = (1 / (x * ln(10))) * dx/dx */
+                return create_node('*', 0, NULL, create_node('/', 0, NULL, create_node('n', 1.0, NULL, NULL, NULL), create_node('*', 0, NULL, copy_ast(node->left), create_node('n', 2.302585, NULL, NULL, NULL))), differentiate(node->left));
             }
         case 'u':
             /* d/dx (-f) = -df/dx */
@@ -135,6 +136,7 @@ ASTNode* differentiate(ASTNode* node) {
 }
 
 Dual evaluate_expression_dual(ASTNode* node, double x) {
+    Dual a;
     if (!node) return make_dual(0, 0);
     switch (node->type)
     {
@@ -166,7 +168,7 @@ Dual evaluate_expression_dual(ASTNode* node, double x) {
             }
             break;
         case 'u':
-            Dual a = evaluate_expression_dual(node->left, x);
+            a = evaluate_expression_dual(node->left, x);
             return make_dual(-a.real, -a.dual);
         default:
             printf("Error: Unknown node type '%c'\n", node->type);

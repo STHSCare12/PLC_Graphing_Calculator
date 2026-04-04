@@ -11,7 +11,9 @@ int calcMode = 1; /* 1 = Simple Calculator, 2 = Differentiation, 3 = Graph */
 /* Current token */
 Token current() {
     if (!tokens || tokens[pos].type == TOKEN_END) {
-        Token t = {TOKEN_END, ""};
+        Token t;
+        t.type = TOKEN_END;
+        t.value[0] = '\0';
         return t;
     }
     return tokens[pos];
@@ -44,19 +46,34 @@ void freeAST(ASTNode* node) {
 
 /* Declarations */
 ASTNode* parseFactor();
-ASTNode* parseUnaryMinus();
+/* ASTNode* parseUnaryMinus(); */
 ASTNode* parsePower();
 ASTNode* parseTerm();
 ASTNode* parseExpression();
 
 /* Parse a Factor */
 ASTNode* parseFactor() {
-    Token t = current();
+    Token t;
+    ASTNode* node;
+    ASTNode* child;
+    t = current();
     if (t.type == TOKEN_END) {return NULL;}
+
+    /* Unary Minus */
+    if (t.type == TOKEN_OPERATOR && t.value[0] == '-') {
+        next();
+        child = parseFactor();
+        if (!child) return NULL;
+        node = (ASTNode*) malloc(sizeof(ASTNode));
+        node->type = 'u';
+        node->left = child;
+        node->right = NULL;
+        return node;
+    }
 
     /* Number */
     if (t.type == TOKEN_NUMBER) {
-        ASTNode* node = (ASTNode*) malloc (sizeof(ASTNode));
+        node = (ASTNode*) malloc (sizeof(ASTNode));
         node->type = 'n';
         node->value = atof(t.value);
         node->left = node->right = NULL;
@@ -71,14 +88,15 @@ ASTNode* parseFactor() {
             || strcmp(t.value, "tan") == 0 || strcmp(t.value, "exp") == 0 
             || strcmp(t.value, "log") == 0) {
 
-            ASTNode* node = (ASTNode*) malloc(sizeof(ASTNode));
+            node = (ASTNode*) malloc(sizeof(ASTNode));
             node->type = 'f';
             node->left = node->right = NULL;
             node->value = 0;
             strncpy(node->func, t.value, sizeof(node->func)-1);
             node->func[sizeof(node->func)-1] = '\0';
             next();
-            if (current().type != TOKEN_LPAREN) {
+            t = current();
+            if (t.type != TOKEN_LPAREN) {
                 printf("Error: Expected '('\n");
                 free(node);
                 return NULL;
@@ -93,13 +111,12 @@ ASTNode* parseFactor() {
             if (calcMode == 1 && containsVariable(node->left)) {
                 printf("Invalid!! Function arguments must be numeric constants in Simple Calculator mode\n");
                 freeAST(node->left);
-                /* free(node); */
                 return NULL;
             }
-            if (current().type != TOKEN_RPAREN) {
+            t = current();
+            if (t.type != TOKEN_RPAREN) {
                 printf("Error: Expected ')'\n");
                 freeAST(node);
-                /* free(node); */
                 return NULL;
             }
             next();
@@ -112,7 +129,7 @@ ASTNode* parseFactor() {
                 /* printf("Invalid!! Variables not allowed in Simple Calculator mode\n"); */
                 return NULL;
             }
-            ASTNode* node = malloc(sizeof(ASTNode));
+            node = (ASTNode*) malloc(sizeof(ASTNode));
             node->type = 'v';
             node->left = node->right = NULL;
             node->value = 0;
@@ -126,9 +143,10 @@ ASTNode* parseFactor() {
     /* Parentheses */
     if (t.type == TOKEN_LPAREN) {
         next();
-        ASTNode* node = parseExpression();
+        node = parseExpression();
         if (!node) return NULL;
-        if (current().type != TOKEN_RPAREN) {
+        t = current();
+        if (t.type != TOKEN_RPAREN) {
             printf("Error: Expected ')'\n");
             freeAST(node);
             return NULL;
@@ -141,82 +159,109 @@ ASTNode* parseFactor() {
 }
 
 /* Parse a Unary Minus */
-ASTNode* parseUnaryMinus() {
-    if (current().type == TOKEN_OPERATOR && current().value[0] == '-') {
+/* ASTNode* parseUnaryMinus() {
+    Token t;
+    ASTNode* node;
+    ASTNode* left;
+    t = current();
+    if (t.type == TOKEN_OPERATOR && t.value[0] == '-') {
         next();
-        ASTNode* left = parseUnaryMinus();
+        left = parseUnaryMinus();
         if (!left) return NULL;
-        ASTNode* node = (ASTNode*) malloc (sizeof(ASTNode));
+        node = (ASTNode*) malloc (sizeof(ASTNode));
         node->type = 'u';
         node->left = left;
         node->right = NULL;
         return node;
     }
-    return parseFactor();
-}
+    return parsePower();
+} */
 
 /* Parse a Power */
 ASTNode* parsePower() {
-    ASTNode* left = parseUnaryMinus();
-    while (current().type != TOKEN_END && current().type == TOKEN_OPERATOR && current().value[0] == '^') {
+    ASTNode* left;
+    ASTNode* right;
+    ASTNode* node;
+    Token t;
+    left = parseFactor();
+    t = current();
+    while (t.type != TOKEN_END && t.type == TOKEN_OPERATOR && t.value[0] == '^') {
         next();
-        ASTNode* right = parseUnaryMinus();
-        ASTNode* node = (ASTNode*) malloc (sizeof(ASTNode));
+        right = parsePower();
+        node = (ASTNode*) malloc (sizeof(ASTNode));
         node->type = '^';
         node->left = left;
         node->right = right;
         node->value = 0;
         left = node;
+        t = current();
     }
     return left;
 }
 
 /* Parse a Term */
 ASTNode* parseTerm() {
-    ASTNode* left = parsePower();
-    while (current().type != TOKEN_END && current().type == TOKEN_OPERATOR && (current().value[0] == '*' || current().value[0] == '/')) {
-        char op = current().value[0];
+    ASTNode* left;
+    ASTNode* right;
+    ASTNode* node;
+    char op;
+    Token t;
+    left = parsePower();
+    t = current();
+    while (t.type != TOKEN_END && t.type == TOKEN_OPERATOR && (t.value[0] == '*' || t.value[0] == '/')) {
+        op = t.value[0];
         next();
-        ASTNode* right = parsePower();
-        ASTNode* node = (ASTNode*) malloc (sizeof(ASTNode));
+        right = parsePower();
+        node = (ASTNode*) malloc (sizeof(ASTNode));
         node->type = op;
         node->left = left;
         node->right = right;
         node->value = 0;
         left = node;
+        t = current();
     }
     return left;
 }
 
 /* Parse an Expression */
 ASTNode* parseExpression() {
-    ASTNode* left = parseTerm();
-    while (current().type != TOKEN_END && current().type == TOKEN_OPERATOR && (current().value[0] == '+' || current().value[0] == '-')) {
-        char op = current().value[0];
+    ASTNode* left;
+    ASTNode* right;
+    ASTNode* node;
+    char op;
+    Token t;
+    left = parseTerm();
+    t = current();
+    while (t.type != TOKEN_END && t.type == TOKEN_OPERATOR && (t.value[0] == '+' || t.value[0] == '-')) {
+        op = t.value[0];
         next();
-        ASTNode* right = parseTerm();
-        ASTNode* node = (ASTNode*) malloc (sizeof(ASTNode));
+        right = parseTerm();
+        node = (ASTNode*) malloc (sizeof(ASTNode));
         node->type = op;
         node->left = left;
         node->right = right;
         node->value = 0;
         left = node;
+        t = current();
     }
     return left;
 }
 
 /* build AST */
 ASTNode* buildAST(Token inputTokens[], int mode) {
+    ASTNode* ast;
+    Token t;
     tokens = inputTokens;
     pos = 0;
     calcMode = mode;
-    ASTNode* ast = parseExpression();
+    ast = parseExpression();
     if (!ast) {
         printf("Error: Could not parse expression\n");
         return NULL;
     }
-    if (current().type != TOKEN_END) {
-        printf("Error: Unexpected token '%s' at end\n", current().value);
+    t = current();
+    if (t.type != TOKEN_END) {
+        printf("Error: Unexpected token '%s' at end\n", t.value);
         freeAST(ast);
         return NULL;
     }
@@ -225,9 +270,10 @@ ASTNode* buildAST(Token inputTokens[], int mode) {
 
 /* print AST */
 void printAST(ASTNode* node, int depth) {
+    int i;
     if (!node) return;
 
-    for (int i = 0; i < depth; i++) {
+    for (i = 0; i < depth; i++) {
         printf("  ");
     }
 
