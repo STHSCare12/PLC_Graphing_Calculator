@@ -1,4 +1,10 @@
 /* Downloaded from https://repo.progsbase.com - Code Developed Using progsbase. */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#pragma GCC diagnostic ignored "-Woverlength-strings"
+#pragma GCC diagnostic ignored "-Wpedantic"
 
 #include "pbPlots.h"
 
@@ -8461,3 +8467,4 @@ void AppendBitsToBytesRight(ByteArray *bytes, NumberReference *nextbit, double d
   }
 }
 
+#pragma GCC diagnostic pop

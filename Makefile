@@ -6,7 +6,7 @@ CFLAGS = -ansi -pedantic -Wall -Werror
 
 # Project files
 # SOURCES = main.c helper.c lexer.c parser.c
-SOURCES = main.c helper.c lexer.c ast.c evaluator.c dualUtils.c graph.c
+SOURCES = main.c helper.c lexer.c ast.c evaluator.c dualUtils.c graph.c helper_functions/pbPlots/pbPlots.c helper_functions/pbPlots/supportLib.c
 OBJECTS = $(SOURCES:.c=.o)
 TARGET = run
 
