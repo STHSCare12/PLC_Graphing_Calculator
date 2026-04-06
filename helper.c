@@ -62,15 +62,6 @@ void process_equation(char *equation, int mode, Token tokens[]) {
         return;
     }
 
-    if (mode == 1) {
-        printf("[Mode: Simple Calculator]\n");
-    }
-    else if (mode == 2) {
-        printf("[Mode: Differentiate]\n");
-    }
-    else if (mode == 3) {
-        printf("[Mode: Graph]\n");
-    }
 }
 
 void process_input(char *input, int mode, Token tokens[]) {
@@ -90,38 +81,6 @@ void process_input(char *input, int mode, Token tokens[]) {
         }
         equation = strtok(NULL, ",");
     }
-}
-
-int read_input(int argc, char *argv[], char *buffer, int mode, Token tokens[]) {
-    
-    /*if file provided, read file -> loop thru each line and process each line*/
-    if (argc > 1) {
-        FILE *file = fopen(argv[1], "r");
-        if (!file) {
-            perror("Error opening file");
-            return 0;
-        }
-
-        while (fgets(buffer, MAX_INPUT, file)) {
-            buffer[strcspn(buffer, "\n")] = '\0';
-
-            process_input(buffer, mode, tokens);   
-        }
-        fclose(file);
-    }
-
-    else {
-        /* input is stdin */
-        printf("Enter equation: ");
-        
-        if (fgets(buffer, MAX_INPUT, stdin) == NULL) {
-            printf("Error reading input\n");
-            return 0;
-        }
-        buffer[strcspn(buffer, "\n")] = '\0';
-        process_input(buffer, mode, tokens); 
-    }
-    return 1;
 }
 
 
