@@ -47,16 +47,105 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        if (!read_input(argc, argv, input, choice, tokens)) {
-            return 1;
+        /* file mode */
+        if (argc > 1) {
+            FILE *file = fopen(argv[1], "r");
+            if (!file) {
+                perror("Error opening file");
+                return 1;
+            }
+
+            while (fgets(input, sizeof(input), file)) {
+                char buffer[MAX_INPUT];
+                char *equation;
+
+                input[strcspn(input, "\n")] = '\0';
+                if (strlen(input) == 0) continue;
+
+                strcpy(buffer, input);
+                equation = strtok(buffer, ",");
+
+                while (equation != NULL) {
+                    char trimmed[MAX_INPUT];
+                    strncpy(trimmed, equation, MAX_INPUT - 1);
+                    trimmed[MAX_INPUT - 1] = '\0';
+                    trim(trimmed);
+                    if (strlen(trimmed) == 0) {
+                        equation = strtok(NULL, ",");
+                        continue;
+                    }
+
+                    memset(tokens, 0, sizeof(Token) * MAX_TOKENS);
+                    process_equation(trimmed, choice, tokens);
+
+                    ast = buildAST(tokens, choice);
+                    if (!ast) {
+                        printf("Error: Failed to build AST for: %s\n", trimmed);
+                        equation = strtok(NULL, ",");
+                        continue;
+                    }
+
+                    printf("\n=== AST ===\n");
+                    printAST(ast, 0);
+
+                    /* Mode 1: Simple Calculator */
+                    if (choice == 1) {
+                        double result = evaluate_expression(ast);
+                        printf("Result: %f\n\n", result);
+                        /* Free memory*/
+                        freeAST(ast);
+                    }
+
+                    /* Mode 2: Differentiate */
+                    if (choice == 2) {
+                        printf("y = ");
+                        print_expression(ast);
+                        printf("\n");
+                        derivative = differentiate(ast);
+                        derivative = simplify(derivative);
+
+                        printf("dy/dx = ");
+                        print_expression(derivative);
+                        printf("\n");
+
+                        /*removed enter value option for file mode*/
+                        freeAST(ast);
+                        freeAST(derivative);
+                    }
+
+                    /* Mode 3: Show Graphs */
+                    if (choice == 3) {
+                        printf("y = ");
+                        print_expression(ast);
+                        printf("\n");
+
+                        plot_graph(ast);
+
+                        /* Free memory*/
+                        freeAST(ast);
+                        printf("\n");
+                    }
+
+                    /*adding this for a seperation line space before next equation*/
+                    printf("---\n");
+                    equation = strtok(NULL, ",");
+                }
+            }
+
+            fclose(file);
+            continue; /* back to menu */
         }
 
-        /* if (!parse(tokens, choice)) {
-             return 1;
-         } */
+        /* stdin */
+        printf("Enter equation: ");
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("Error reading input\n");
+            continue;
+        }
+        input[strcspn(input, "\n")] = '\0';
+        process_input(input, choice, tokens);
 
-        /* Build AST */
-        ast = buildAST(tokens, choice); 
+        ast = buildAST(tokens, choice);
         if (!ast) {
             printf("Error: Failed to build AST\n");
             continue;
