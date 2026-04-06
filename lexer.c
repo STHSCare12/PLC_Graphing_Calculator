@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <ctype.h>
 #include <string.h>
 #include "helper.h"
 
@@ -7,20 +6,37 @@
 int is_operator(char c) {
     return (c == '+' || c == '-' || c == '*' || c == '/' || c == '^');
 }
+/*checks if space*/
+int is_space(char c) {
+    return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v');
+}
+/*checks if its a digit*/
+int is_digit(char c) {
+    return (c >= '0' && c <= '9');
+}
+
+int is_alpha(char c) {
+    return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+}
+
+int is_alnum(char c) {
+    return (is_alpha(c) || is_digit(c));
+}
+
 
 int tokenize(const char *input, Token tokens[]) {
     int i = 0;
     int pos = 0;
 
     while (input[i] != '\0') {
-        if (isspace(input[i])) {
+        if (is_space(input[i])) {
             i++; /*skip spaces*/
             continue;
         }
 
-        if (isdigit(input[i]) || input[i] == '.') { /*if its a number or decimal */
+        if (is_digit(input[i]) || input[i] == '.') { /*if its a number or decimal */
             int j = 0;
-            while (isdigit(input[i]) || input[i] == '.') {
+            while (is_digit(input[i]) || input[i] == '.') {
                 if (j < 31) tokens[pos].value[j++] = input[i];
                 i++;
             }
@@ -31,9 +47,9 @@ int tokenize(const char *input, Token tokens[]) {
         }
 
         /*alphabetic letter-> either variable or a function -> identifier*/
-        if (isalpha(input[i])) {
+        if (is_alpha(input[i])) {
             int j = 0;
-            while (isalnum(input[i])) { /*x1 is counted*/
+            while (is_alnum(input[i])) { /*x1 is counted*/
                 if (j < 31) tokens[pos].value[j++] = input[i];
                 i++;
             }
