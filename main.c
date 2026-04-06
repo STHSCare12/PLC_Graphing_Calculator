@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
                     }
 
                     /*adding this for a seperation line space before next equation*/
-                    printf("---\n");
+                    printf("=========================\n");
                     equation = strtok(NULL, ",");
                 }
             }
