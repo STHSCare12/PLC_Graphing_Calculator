@@ -64,25 +64,6 @@ void process_equation(char *equation, int mode, Token tokens[]) {
 
 }
 
-void process_input(char *input, int mode, Token tokens[]) {
-    char *equation;
-    char buffer[MAX_INPUT];
-    strcpy(buffer, input); /* copy input so strtok doesn't modify original */
-
-    equation = strtok(buffer, ",");
-    while (equation != NULL) {
-        char trimmed[MAX_INPUT];
-        strncpy(trimmed, equation, MAX_INPUT - 1);
-        trimmed[MAX_INPUT - 1] = '\0';
-        trim(trimmed);
-        if (strlen(trimmed) > 0) {
-            memset(tokens, 0, sizeof(Token) * MAX_TOKENS);
-            process_equation(trimmed, mode, tokens);
-        }
-        equation = strtok(NULL, ",");
-    }
-}
-
 
 void print_tokens(Token tokens[]) {
     int i = 0;

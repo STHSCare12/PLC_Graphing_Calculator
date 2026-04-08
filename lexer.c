@@ -23,6 +23,22 @@ int is_alnum(char c) {
     return (is_alpha(c) || is_digit(c));
 }
 
+int is_valid_number(const char *s) {
+    int dot_count = 0;
+    int i = 0;
+    if (s[i] == '\0') return 0;  /*empty string */
+    while (s[i] != '\0') {
+        if (s[i] == '.') {
+            dot_count++;
+            if (dot_count > 1) return 0;  /*more than one dot -> invalid */
+        } else if (!is_digit(s[i])) {
+            return 0; 
+        }
+        i++;
+    }
+    return 1;
+}
+
 
 int tokenize(const char *input, Token tokens[]) {
     int i = 0;
@@ -41,7 +57,12 @@ int tokenize(const char *input, Token tokens[]) {
                 i++;
             }
             tokens[pos].value[j] = '\0';
-            tokens[pos].type = TOKEN_NUMBER; /*store the value and type*/
+            /*validate number first e.g 12.3.2 is invalid */
+            if (is_valid_number(tokens[pos].value)) {
+                tokens[pos].type = TOKEN_NUMBER;
+            } else {
+                tokens[pos].type = TOKEN_INVALID;
+            }
             pos++;
             continue;
         }

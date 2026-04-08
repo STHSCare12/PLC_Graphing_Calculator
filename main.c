@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
             continue;
         }
         input[strcspn(input, "\n")] = '\0';
-        process_input(input, choice, tokens);
+        process_equation(input, choice, tokens);
 
         ast = buildAST(tokens, choice);
         if (!ast) {
