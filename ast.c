@@ -1,5 +1,6 @@
 #include "ast.h"
 #include "helper.h"
+#include "print.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -279,7 +280,9 @@ void printAST(ASTNode* node, int depth) {
 
     switch (node->type) {
         case 'n':
-            printf("Number: %f\n", node->value);
+            printf("Number: ");
+            printResult(node->value);
+            printf("\n");
             break;
         case 'v':
             printf("Variable: x\n");

@@ -8,6 +8,7 @@
 #include "dualUtils.h"
 #include "graph.h"
 #include "tests.h"
+#include "print.h"
 
 /* Used for Mode 1: Simple Calculator */
 void simpleCalc(ASTNode* ast, double *result) {
@@ -40,8 +41,17 @@ void differentiation(ASTNode* ast, ASTNode** derivative, double *x, double *y_va
         *y_val = evaluate_expression(ast);
         *dy_val = evaluate_expression(*derivative);
 
-        printf("\ny(%g) = %f\n", *x, *y_val);
-        printf("dy/dx(%g) = %f\n", *x, *dy_val);
+        printf("\ny(");
+        printResult(*x);
+        printf(") = ");
+        printResult(*y_val);
+        printf("\n");
+
+        printf("\ndy/dx(");
+        printResult(*x);
+        printf(") = ");
+        printResult(*dy_val);
+        printf("\n");
     }
 
     /* Free memory */
@@ -49,6 +59,7 @@ void differentiation(ASTNode* ast, ASTNode** derivative, double *x, double *y_va
     freeAST(*derivative);
 }
 
+/* Used for Mode 3: Show Graphs */
 void showGraphs(ASTNode* ast) {
     printf("\ny = ");
     print_expression(ast);
@@ -60,51 +71,8 @@ void showGraphs(ASTNode* ast) {
     freeAST(ast);
 }
 
-void suppressPrint() {
-    if (freopen("/dev/null", "w", stdout) == NULL) {
-        freopen("NUL", "w", stdout);
-    }
-}
-
-void unsuppressPrint() {
-    if (freopen("/dev/tty", "w", stdout) == NULL) {
-        freopen("CON", "r", stdout);
-    }
-}
-
-void printSelectedChoice(int choice) {
-    printf("\n-------------------------");   
-
-    switch (choice) {
-        case 0:
-            printf("\n===      RUN TEST     ===\n");
-            break;
-        case 1:
-            printf("\n=== SIMPLE CALCULATOR ===\n");
-            break;
-        case 2:
-            printf("\n===  DIFFERENTIATION  ===\n");
-            break;
-        case 3:
-            printf("\n===    SHOW GRAPHS    ===\n");
-            break;
-    }   
-    
-    printf("-------------------------\n");   
-}
-
-void printMenu() {
-    printf("\n----------------------------"); 
-    printf("\n===  Graphic Calculator  ===\n");
-    printf("----------------------------\n"); 
-    printf("1. Simple Calculator\n");
-    printf("2. Differentiate\n");
-    printf("3. Show Graphs\n");
-    printf("4. Exit Programme\n\n");
-}
-
 int main(int argc, char *argv[]) {
-    char input[256];
+    char input[MAX_INPUT];
     char line[128];
     int choice = 0;
     Token tokens[MAX_TOKENS];
@@ -198,7 +166,9 @@ int main(int argc, char *argv[]) {
                     /* Mode 1: Simple Calculator */
                     if (choice == 1) {
                         simpleCalc(ast, &result);
-                        printf("\nResult: %f\n", result);
+                        printf("\nResult: ");
+                        printResult(result);
+                        printf("\n");
                     }
 
                     /* Mode 2: Differentiate */
@@ -275,7 +245,9 @@ int main(int argc, char *argv[]) {
         /* Mode 1: Simple Calculator */
         if (choice == 1) {
             simpleCalc(ast, &result);
-            printf("\nResult: %f\n", result);
+            printf("\nResult: ");
+            printResult(result);
+            printf("\n");
         }
 
         /* Mode 2: Differentiate */

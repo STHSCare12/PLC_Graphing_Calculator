@@ -1,4 +1,5 @@
 #include "evaluator.h"
+#include "print.h"
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -280,7 +281,7 @@ void print_expression(ASTNode* node) {
     switch (node->type)
     {
         case 'n':
-            printf("%.2f", node->value);
+            printResult(node->value);
             break;
         case 'v':
             printf("x");
