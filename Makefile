@@ -1,20 +1,25 @@
 # Ensure compiler is gcc
 CC = gcc
+STD = c99
 
 # Compiler flags
-CFLAGS = -ansi -pedantic -Wall -Werror
+CFLAGS = -pedantic -Wall -Werror
 
 # Project files
-# SOURCES = main.c helper.c lexer.c parser.c
-SOURCES = main.c helper.c lexer.c ast.c evaluator.c dualUtils.c graph.c helper_functions/pbPlots/pbPlots.c helper_functions/pbPlots/supportLib.c
+# .c files
+SRC_DIR = .
+SOURCES = $(wildcard $(SRC_DIR)/*.c) helper_functions/pbPlots/pbPlots.c helper_functions/pbPlots/supportLib.c
+
+# .o files
+$(OBJECTS)
 OBJECTS = $(SOURCES:.c=.o)
-TARGET = run
+TARGET = calculator
 
 # Create executable
 # $@ refers to $(TARGET)
 # $^ refers to $(OBJECTS)
 $(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) -std=$(STD) $(CFLAGS) -o $@ $^ -lm
 
 .PHONY: clean
 

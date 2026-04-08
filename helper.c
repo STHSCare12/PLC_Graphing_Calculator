@@ -25,14 +25,14 @@ int isAlpha(char c) {
     return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
 
-void process_equation(char *equation, int mode, Token tokens[]) {
+int process_equation(char *equation, int mode, Token tokens[]) {
     char safe[MAX_INPUT];
     int i;
     int check_variable = 0;
     strncpy(safe, equation, MAX_INPUT - 1);
     safe[MAX_INPUT - 1] = '\0';
     trim(safe);
-    if (strlen(safe) == 0) return;
+    if (strlen(safe) == 0) return 0;
 
     /* Skip LHS in Mode 2: Differentiate */
     if (mode == 2) {
@@ -45,9 +45,10 @@ void process_equation(char *equation, int mode, Token tokens[]) {
         }
     }
 
-    printf("Equation: %s\n", safe);
+    printf("\nEquation: %s\n", safe);
     memset(tokens, 0, sizeof(Token) * MAX_TOKENS);
     tokenize(safe, tokens);
+    printf("\n=== Tokenizer ===\n");
     print_tokens(tokens);
 
     /* check for variables in Simple Calculator mode */
@@ -58,10 +59,11 @@ void process_equation(char *equation, int mode, Token tokens[]) {
         }
     }
     if (mode == 1 && check_variable) {
-        printf("Invalid!! Variables not allowed in Simple Calculator mode\n");
-        return;
+        printf("\nInvalid!! Variables not allowed in Simple Calculator mode\n");
+        return 1;
     }
 
+    return 0;
 }
 
 

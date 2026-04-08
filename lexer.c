@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "helper.h"
+#include <limits.h>
 
 /*checks if math operator*/
 int is_operator(char c) {
@@ -39,6 +40,22 @@ int is_valid_number(const char *s) {
     return 1;
 }
 
+int is_validTest(char* value) {
+    return ((strcmp(value, "INT_MAX") == 0) || (strcmp(value, "INT_MIN") == 0));
+}
+
+void assignValue(Token* token) {
+    if (strcmp(token->value, "INT_MAX") == 0) {
+        memset(token->value, 0, sizeof(token->value)); /* reset token array */
+        sprintf(token->value, "%d", INT_MAX);
+    }
+    if (strcmp(token->value, "INT_MIN") == 0) {
+        memset(token->value, 0, sizeof(token->value)); /* reset token array */
+        sprintf(token->value, "%d", INT_MIN);
+    }
+
+    token->type = TOKEN_NUMBER;
+}
 
 int tokenize(const char *input, Token tokens[]) {
     int i = 0;
@@ -69,13 +86,22 @@ int tokenize(const char *input, Token tokens[]) {
 
         /*alphabetic letter-> either variable or a function -> identifier*/
         if (is_alpha(input[i])) {
+            
             int j = 0;
-            while (is_alnum(input[i])) { /*x1 is counted*/
+            int test = 0;
+            while (is_alnum(input[i]) || input[i] == '_') { /*x1 is counted*/
+                if (input[i] == '_') test = 1;
                 if (j < 31) tokens[pos].value[j++] = input[i];
                 i++;
             }
             tokens[pos].value[j] = '\0';
-            tokens[pos].type = TOKEN_IDENTIFIER;
+            if (test) { 
+                if (is_validTest(tokens[pos].value)) {
+                    assignValue(&tokens[pos]);
+                }
+                else {tokens[pos].type = TOKEN_INVALID;}
+                }
+            else {tokens[pos].type = TOKEN_IDENTIFIER;}
             pos++;
             continue;
         }
