@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
 
     /* Testing */
     Test tests[MAX_TESTS];
-    int success;
+    int success = 0;
     int i;
 
     while (choice != 4) {

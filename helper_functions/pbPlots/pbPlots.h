@@ -15,8 +15,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void StartArenaAllocator();
-void FreeAllocations();
+void StartArenaAllocator(void);
+void FreeAllocations(void);
 void *Allocate(int64_t size, int64_t e);
 void Free(void *addr);
 
@@ -355,7 +355,7 @@ double InterceptFromCoordinates(double x1, double y1, double x2, double y2);
 RGBA **Get8HighContrastColors(size_t *returnArrayLength);
 
 void DrawFilledRectangleWithBorder(RGBABitmapImage *image, double x, double y, double w, double h, RGBA *borderColor, RGBA *fillColor);
-RGBABitmapImageReference *CreateRGBABitmapImageReference();
+RGBABitmapImageReference *CreateRGBABitmapImageReference(void);
 
 _Bool RectanglesOverlap(Rectangle *r1, Rectangle *r2);
 Rectangle *CreateRectangle(double x1, double y1, double x2, double y2);
@@ -370,20 +370,20 @@ double MapXCoordinateAutoSettings(double x, RGBABitmapImage *image, double *xs, 
 double MapYCoordinateAutoSettings(double y, RGBABitmapImage *image, double *ys, size_t ysLength);
 double MapXCoordinateBasedOnSettings(double x, ScatterPlotSettings *settings);
 double MapYCoordinateBasedOnSettings(double y, ScatterPlotSettings *settings);
-double GetDefaultPaddingPercentage();
+double GetDefaultPaddingPercentage(void);
 
 void DrawText(RGBABitmapImage *canvas, double x, double y, wchar_t *text, size_t textLength, RGBA *color);
 void DrawTextUpwards(RGBABitmapImage *canvas, double x, double y, wchar_t *text, size_t textLength, RGBA *color);
 
-ScatterPlotSettings *GetDefaultScatterPlotSettings();
-ScatterPlotSeries *GetDefaultScatterPlotSeriesSettings();
+ScatterPlotSettings *GetDefaultScatterPlotSettings(void);
+ScatterPlotSeries *GetDefaultScatterPlotSeriesSettings(void);
 _Bool DrawScatterPlot(RGBABitmapImageReference *canvasReference, double width, double height, double *xs, size_t xsLength, double *ys, size_t ysLength, StringReference *errorMessage);
 _Bool DrawScatterPlotFromSettings(RGBABitmapImageReference *canvasReference, ScatterPlotSettings *settings, StringReference *errorMessage);
 void ComputeBoundariesBasedOnSettings(ScatterPlotSettings *settings, Rectangle *boundaries);
 _Bool ScatterPlotFromSettingsValid(ScatterPlotSettings *settings, StringReference *errorMessage);
 
-BarPlotSettings *GetDefaultBarPlotSettings();
-BarPlotSeries *GetDefaultBarPlotSeriesSettings();
+BarPlotSettings *GetDefaultBarPlotSettings(void);
+BarPlotSeries *GetDefaultBarPlotSeriesSettings(void);
 RGBABitmapImage *DrawBarPlotNoErrorCheck(double width, double height, double *ys, size_t ysLength);
 _Bool DrawBarPlot(RGBABitmapImageReference *canvasReference, double width, double height, double *ys, size_t ysLength, StringReference *errorMessage);
 _Bool DrawBarPlotFromSettings(RGBABitmapImageReference *canvasReference, BarPlotSettings *settings, StringReference *errorMessage);
@@ -394,16 +394,16 @@ double GetMaximum(double *data, size_t dataLength);
 
 double RoundToDigits(double element, double digitsAfterPoint);
 
-double test();
+double test(void);
 void TestMapping(NumberReference *failures);
 void TestMapping2(NumberReference *failures);
 void ExampleRegression(RGBABitmapImageReference *image);
 void ExampleRegression2(RGBABitmapImageReference *image);
 void BarPlotExample(RGBABitmapImageReference *imageReference);
 
-RGBA *GetBlack();
-RGBA *GetWhite();
-RGBA *GetTransparent();
+RGBA *GetBlack(void);
+RGBA *GetWhite(void);
+RGBA *GetTransparent(void);
 RGBA *GetGray(double percentage);
 RGBA *CreateRGBColor(double r, double g, double b);
 RGBA *CreateRGBAColor(double r, double g, double b, double a);
@@ -611,7 +611,7 @@ PHYS *PysicsHeader(double pixelsPerMeter);
 ByteArray *ConvertToPNGWithOptions(RGBABitmapImage *image, double colorType, _Bool setPhys, double pixelsPerMeter, double compressionLevel);
 ByteArray *PNGSerializeChunks(PNGImage *png);
 double PNGIDATLength(PNGImage *png);
-double PNGHeaderLength();
+double PNGHeaderLength(void);
 ByteArray *GetPNGColorData(RGBABitmapImage *image);
 ByteArray *GetPNGColorDataGreyscale(RGBABitmapImage *image);
 IHDR *PNGHeader(RGBABitmapImage *image, double colortype);
@@ -663,7 +663,7 @@ StringReference *GetStringRef(StringArrayReference *list, double i);
 void RemoveStringRef(StringArrayReference *list, double i);
 
 
-DynamicArrayCharacters *CreateDynamicArrayCharacters();
+DynamicArrayCharacters *CreateDynamicArrayCharacters(void);
 DynamicArrayCharacters *CreateDynamicArrayCharactersWithInitialCapacity(double capacity);
 void DynamicArrayAddCharacter(DynamicArrayCharacters *da, wchar_t value);
 void DynamicArrayCharactersIncreaseSize(DynamicArrayCharacters *da);
@@ -689,14 +689,14 @@ _Bool GetBooleanRef(BooleanArrayReference *list, double i);
 void RemoveDecimalRef(BooleanArrayReference *list, double i);
 
 
-LinkedListStrings *CreateLinkedListString();
+LinkedListStrings *CreateLinkedListString(void);
 void LinkedListAddString(LinkedListStrings *ll, wchar_t *value, size_t valueLength);
 StringReference **LinkedListStringsToArray(size_t *returnArrayLength, LinkedListStrings *ll);
 double LinkedListStringsLength(LinkedListStrings *ll);
 void FreeLinkedListString(LinkedListStrings *ll);
 
 
-LinkedListNumbers *CreateLinkedListNumbers();
+LinkedListNumbers *CreateLinkedListNumbers(void);
 LinkedListNumbers **CreateLinkedListNumbersArray(size_t *returnArrayLength, double length);
 void LinkedListAddNumber(LinkedListNumbers *ll, double value);
 double LinkedListNumbersLength(LinkedListNumbers *ll);
@@ -710,7 +710,7 @@ double *LinkedListNumbersToArray(size_t *returnArrayLength, LinkedListNumbers *l
 LinkedListNumbers *ArrayToLinkedListNumbers(double *array, size_t arrayLength);
 _Bool LinkedListNumbersEqual(LinkedListNumbers *a, LinkedListNumbers *b);
 
-LinkedListCharacters *CreateLinkedListCharacter();
+LinkedListCharacters *CreateLinkedListCharacter(void);
 void LinkedListAddCharacter(LinkedListCharacters *ll, wchar_t value);
 wchar_t *LinkedListCharactersToArray(size_t *returnArrayLength, LinkedListCharacters *ll);
 double LinkedListCharactersLength(LinkedListCharacters *ll);
@@ -719,7 +719,7 @@ void LinkedListCharactersAddString(LinkedListCharacters *ll, wchar_t *str, size_
 
 
 
-DynamicArrayNumbers *CreateDynamicArrayNumbers();
+DynamicArrayNumbers *CreateDynamicArrayNumbers(void);
 DynamicArrayNumbers *CreateDynamicArrayNumbersWithInitialCapacity(double capacity);
 void DynamicArrayAddNumber(DynamicArrayNumbers *da, double value);
 void DynamicArrayNumbersIncreaseSize(DynamicArrayNumbers *da);

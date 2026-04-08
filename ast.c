@@ -10,7 +10,7 @@ int pos = 0;
 int calcMode = 1; /* 1 = Simple Calculator, 2 = Differentiation, 3 = Graph */
 
 /* Current token */
-Token current() {
+Token current(void) {
     if (!tokens || tokens[pos].type == TOKEN_END) {
         Token t;
         t.type = TOKEN_END;
@@ -21,7 +21,7 @@ Token current() {
 }
 
 /* Move to the next token */
-void next() {
+void next(void) {
     if (tokens[pos].type != TOKEN_END) {
         pos++;
     }
@@ -46,14 +46,14 @@ void freeAST(ASTNode* node) {
 }
 
 /* Declarations */
-ASTNode* parseFactor();
+ASTNode* parseFactor(void);
 /* ASTNode* parseUnaryMinus(); */
-ASTNode* parsePower();
-ASTNode* parseTerm();
-ASTNode* parseExpression();
+ASTNode* parsePower(void);
+ASTNode* parseTerm(void);
+ASTNode* parseExpression(void);
 
 /* Parse a Factor */
-ASTNode* parseFactor() {
+ASTNode* parseFactor(void) {
     Token t;
     ASTNode* node;
     ASTNode* child;
@@ -179,7 +179,7 @@ ASTNode* parseFactor() {
 } */
 
 /* Parse a Power */
-ASTNode* parsePower() {
+ASTNode* parsePower(void) {
     ASTNode* left;
     ASTNode* right;
     ASTNode* node;
@@ -201,7 +201,7 @@ ASTNode* parsePower() {
 }
 
 /* Parse a Term */
-ASTNode* parseTerm() {
+ASTNode* parseTerm(void) {
     ASTNode* left;
     ASTNode* right;
     ASTNode* node;
@@ -225,7 +225,7 @@ ASTNode* parseTerm() {
 }
 
 /* Parse an Expression */
-ASTNode* parseExpression() {
+ASTNode* parseExpression(void) {
     ASTNode* left;
     ASTNode* right;
     ASTNode* node;

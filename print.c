@@ -6,7 +6,7 @@ void suppressPrint(void) {
     }
 }
 
-void unsuppressPrint() {
+void unsuppressPrint(void) {
     if (freopen("/dev/tty", "w", stdout) == NULL) {
         freopen("CON", "w", stdout);
     }
@@ -33,7 +33,7 @@ void printSelectedChoice(int choice) {
     printf("-------------------------\n");   
 }
 
-void printMenu() {
+void printMenu(void) {
     printf("\n----------------------------"); 
     printf("\n===  Graphic Calculator  ===\n");
     printf("----------------------------\n"); 
