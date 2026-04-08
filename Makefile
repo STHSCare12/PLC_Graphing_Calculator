@@ -8,7 +8,7 @@ CFLAGS = -pedantic -Wall -Werror
 # Project files
 # .c files
 SRC_DIR = .
-SOURCES = $(wildcard $(SRC_DIR)/*.c) helper_functions/pbPlots/pbPlots.c helper_functions/pbPlots/supportLib.c
+SOURCES = $(filter-out $(SRC_DIR)/parser.c, $(wildcard $(SRC_DIR)/*.c)) helper_functions/pbPlots/pbPlots.c helper_functions/pbPlots/supportLib.c
 
 # .o files
 $(OBJECTS)
