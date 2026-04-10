@@ -90,44 +90,44 @@ ASTNode* differentiate(ASTNode* node) {
             /* d/dx (x) = 1 */
             return create_node('n', 1, NULL, NULL, NULL); 
         case '+':
-            /* d/dx (f + g) = df/dx + dg/dx */
+            /* d/dx (f(x) + g(x)) = f'(x) + g'(x) */
             return create_node('+', 0, NULL, differentiate(node->left), differentiate(node->right)); 
         case '-':
-            /* d/dx (f - g) = df/dx - dg/dx */
+            /* d/dx (f(x) - g(x)) = f'(x) - g'(x) */
             return create_node('-', 0, NULL, differentiate(node->left), differentiate(node->right)); 
         case '*':
-            /* d/dx (f * g) = df/dx * g + f * dg/dx */
+            /* d/dx (f(x) * g(x)) = f'(x) * g(x) + f(x) * g'(x) */
             return create_node('+', 0, NULL, create_node('*', 0, NULL, differentiate(node->left), copy_ast(node->right)), create_node('*', 0, NULL, copy_ast(node->left), differentiate(node->right))); 
         case '/':
-            /* d/dx (f / g) = (df/dx * g - f * dg/dx) / g^2 */
+            /* d/dx (f(x) / g(x)) = (g(x) * f'(x) - f(x) * g'(x)) / g(x)^2 */
             return create_node('/', 0, NULL, create_node('-', 0, NULL, create_node('*', 0, NULL, differentiate(node->left), copy_ast(node->right)), create_node('*', 0, NULL, copy_ast(node->left), differentiate(node->right))), create_node('^', 0, NULL, copy_ast(node->right), create_node('n', 2, NULL, NULL, NULL))); 
         case '^':
             if (node->right->type == 'n') {
-                /* d/dx (f(x)^c) = c * f(x)^(c-1) * df/dx */
+                /* d/dx (f(x) ^ c) = c * f(x)^(c-1) * f'(x) */
                 return create_node('*', 0, NULL, create_node('*', 0, NULL, create_node('n', node->right->value, NULL, NULL, NULL), create_node('^', 0, NULL, copy_ast(node->left), create_node('n', node->right->value - 1, NULL, NULL, NULL))), differentiate(node->left)); 
             } else {
-                /* d/dx (f^g) = f^g * (g' * ln(f) + g * f'/f) */
+                /* d/dx (f(x) ^ g(x)) = f(x)^g(x) * (g'(x) * ln(f(x)) + g(x) * f'(x)/f(x)) */
                 return create_node('*', 0, NULL, create_node('^', 0, NULL, copy_ast(node->left), copy_ast(node->right)), create_node('+', 0, NULL, create_node('*', 0, NULL, differentiate(node->right), create_node('f', 0, "log", copy_ast(node->left), NULL)), create_node('*', 0, NULL, copy_ast(node->right), create_node('/', 0, NULL, differentiate(node->left), copy_ast(node->left)))));
             }
         case 'f':
             if (strcmp(node->func, "sin") == 0) {
-                /* d/dx (sin(x)) = cos(x) * df/dx */
+                /* d/dx (sin(f(x))) = cos(f(x)) * f'(x) */
                 return create_node('*', 0, NULL, create_node('f', 0, "cos", copy_ast(node->left), NULL), differentiate(node->left)); 
             } else if (strcmp(node->func, "cos") == 0) {
-                /* d/dx (cos(x)) = -sin(x) * df/dx */
+                /* d/dx (cos(f(x))) = -sin(f(x)) * f'(x) */
                 return create_node('*', 0, NULL, create_node('u', 0, NULL, create_node('f', 0, "sin", copy_ast(node->left), NULL), NULL), differentiate(node->left)); 
             } else if (strcmp(node->func, "tan") == 0) {
-                /* d/dx (tan(x)) = sec^2(x) * df/dx */
+                /* d/dx (tan(f(x))) = sec^2(f(x)) * f'(x) */
                 return create_node('*', 0, NULL, create_node('/', 0, NULL, create_node('n', 1, NULL, NULL, NULL), create_node('^', 0, NULL, create_node('f', 0, "cos", copy_ast(node->left), NULL), create_node('n', 2, NULL, NULL, NULL))), differentiate(node->left)); 
             } else if (strcmp(node->func, "exp") == 0) {
-                /* d/dx (exp(x)) = exp(x) * df/dx */
+                /* d/dx (exp(f(x))) = exp(f(x)) * f'(x) */
                 return create_node('*', 0, NULL, create_node('f', 0, "exp", copy_ast(node->left), NULL), differentiate(node->left)); 
             } else if (strcmp(node->func, "log") == 0) {
-                /* d/dx log10(x) = (1 / (x * ln(10))) * dx/dx */
+                /* d/dx log10(f(x)) = (1 / (f(x) * ln(10))) * f'(x) */
                 return create_node('*', 0, NULL, create_node('/', 0, NULL, create_node('n', 1.0, NULL, NULL, NULL), create_node('*', 0, NULL, copy_ast(node->left), create_node('n', 2.302585, NULL, NULL, NULL))), differentiate(node->left));
             }
         case 'u':
-            /* d/dx (-f) = -df/dx */
+            /* d/dx (-f(x)) = -f'(x) */
             return create_node('u', 0, NULL, differentiate(node->left), NULL);
         default:
             printf("Error: Unknown node type '%c'\n", node->type);

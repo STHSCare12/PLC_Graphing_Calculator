@@ -47,7 +47,7 @@ void freeAST(ASTNode* node) {
 
 /* Declarations */
 ASTNode* parseFactor(void);
-/* ASTNode* parseUnaryMinus(); */
+ASTNode* parseUnaryMinus(void); 
 ASTNode* parsePower(void);
 ASTNode* parseTerm(void);
 ASTNode* parseExpression(void);
@@ -56,12 +56,12 @@ ASTNode* parseExpression(void);
 ASTNode* parseFactor(void) {
     Token t;
     ASTNode* node;
-    ASTNode* child;
+    /*ASTNode* child;*/
     t = current();
     if (t.type == TOKEN_END) {return NULL;}
 
     /* Unary Minus */
-    if (t.type == TOKEN_OPERATOR && t.value[0] == '-') {
+    /*if (t.type == TOKEN_OPERATOR && t.value[0] == '-') {
         next();
         child = parseFactor();
         if (!child) return NULL;
@@ -70,7 +70,7 @@ ASTNode* parseFactor(void) {
         node->left = child;
         node->right = NULL;
         return node;
-    }
+    }*/
 
     /* Number */
     if (t.type == TOKEN_NUMBER) {
@@ -159,24 +159,20 @@ ASTNode* parseFactor(void) {
     return NULL;
 }
 
-/* Parse a Unary Minus */
-/* ASTNode* parseUnaryMinus() {
+ASTNode* parseUnaryMinus(void) {
     Token t;
     ASTNode* node;
-    ASTNode* left;
     t = current();
     if (t.type == TOKEN_OPERATOR && t.value[0] == '-') {
         next();
-        left = parseUnaryMinus();
-        if (!left) return NULL;
-        node = (ASTNode*) malloc (sizeof(ASTNode));
+        node = malloc(sizeof(ASTNode));
         node->type = 'u';
-        node->left = left;
+        node->left = parsePower();
         node->right = NULL;
         return node;
     }
-    return parsePower();
-} */
+    return parseFactor();
+}
 
 /* Parse a Power */
 ASTNode* parsePower(void) {
@@ -184,11 +180,11 @@ ASTNode* parsePower(void) {
     ASTNode* right;
     ASTNode* node;
     Token t;
-    left = parseFactor();
+    left = parseUnaryMinus();
     t = current();
     while (t.type != TOKEN_END && t.type == TOKEN_OPERATOR && t.value[0] == '^') {
         next();
-        right = parsePower();
+        right = parseUnaryMinus();
         node = (ASTNode*) malloc (sizeof(ASTNode));
         node->type = '^';
         node->left = left;
