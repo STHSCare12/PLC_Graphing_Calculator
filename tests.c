@@ -17,6 +17,7 @@ void init_SimpleTests(Test tests[]) {
     Test ADDITIVE_1, ADDITIVE_2, ADDITIVE_3, ADDITIVE_4;
     Test MULTIPLICATIVE_1;
     Test ALL_1, ALL_2;
+    Test UNARYMINUS_1, UNARYMINUS_2;
 
     init_Test(&ADD_1, "+1+2", 3, TEST_SIMPLE);
     init_Test(&ADD_2, "INT_MAX+1", (double)INT_MAX+1, TEST_SIMPLE);
@@ -40,10 +41,10 @@ void init_SimpleTests(Test tests[]) {
     init_Test(&POW_1, "^2", 0, TEST_SIMPLE);
     init_Test(&POW_2, "INT_MAX^INT_MAX", INFINITY, TEST_SIMPLE);
     init_Test(&POW_3, "INT_MAX^0", 1, TEST_SIMPLE);
-    init_Test(&POW_4, "-1^2", 1, TEST_SIMPLE);
-    init_Test(&POW_5, "-1^3", -1, TEST_SIMPLE);
+    init_Test(&POW_4, "-1^2", -1, TEST_SIMPLE);
+    init_Test(&POW_5, "(-1)^2", 1, TEST_SIMPLE);
     init_Test(&POW_6, "1^-2", 1, TEST_SIMPLE);
-    init_Test(&POW_7, "-1^-2", 1, TEST_SIMPLE);
+    init_Test(&POW_7, "-1^-2", -1, TEST_SIMPLE);
 
     init_Test(&ADDITIVE_1, "INT_MAX+INT_MIN", -1, TEST_SIMPLE);
     init_Test(&ADDITIVE_2, "-1+-1", -2, TEST_SIMPLE);
@@ -54,6 +55,9 @@ void init_SimpleTests(Test tests[]) {
     
     init_Test(&ALL_1, "2*2+2/2-2", 3, TEST_SIMPLE);
     init_Test(&ALL_2, "2*(2+2-2)/2", 2, TEST_SIMPLE);
+
+    init_Test(&UNARYMINUS_1, "-2^4", -16, TEST_SIMPLE);
+    init_Test(&UNARYMINUS_2, "-2^-4", -0.0625, TEST_SIMPLE);
 
     tests[0]  = ADD_1; 
     tests[1]  = ADD_2; 
@@ -87,6 +91,8 @@ void init_SimpleTests(Test tests[]) {
     tests[29] = MULTIPLICATIVE_1; 
     tests[30] = ALL_1;
     tests[31] = ALL_2;
+    tests[32] = UNARYMINUS_1;
+    tests[33] = UNARYMINUS_2;
 }
 
 int verifyTest(Test test, double result, int i) {

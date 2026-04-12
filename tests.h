@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define MAX_TESTS 32
+#define MAX_TESTS 34
 
 typedef enum {
     TEST_SIMPLE = 1,
