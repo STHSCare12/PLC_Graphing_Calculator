@@ -20,16 +20,22 @@ void simpleCalc(ASTNode* ast, double *result) {
 
 /* Used for Mode 2: Differentiate */
 void differentiation(ASTNode* ast, ASTNode** derivative, double *x, double *y_val, double *dy_val, int file) {
-    printf("\ny = ");
-    print_expression(ast);
-    printf("\n");
+    if (file != 2) {
+        printf("\ny = ");
+        print_expression(ast);
+        printf("\n");
 
-    *derivative = differentiate(ast);
-    *derivative = simplify(*derivative);
+        *derivative = differentiate(ast);
+        *derivative = simplify(*derivative);
 
-    printf("dy/dx = ");
-    print_expression(*derivative);
-    printf("\n");
+        printf("dy/dx = ");
+        print_expression(*derivative);
+        printf("\n");
+    }
+    else {
+        *derivative = differentiate(ast);
+        *derivative = simplify(*derivative);
+    }
 
     if (!file) {
         printf("\nEnter value of x: ");
@@ -52,6 +58,12 @@ void differentiation(ASTNode* ast, ASTNode** derivative, double *x, double *y_va
         printf(") = ");
         printResult(*dy_val);
         printf("\n");
+    }
+    else if (file == 2) {
+        *x = 2;
+        CURRENT_X = *x;
+        *y_val = evaluate_expression(ast);
+        *dy_val = evaluate_expression(*derivative);
     }
 
     /* Free memory */
@@ -86,7 +98,8 @@ int main(int argc, char *argv[]) {
     double dy_val;
 
     /* Testing */
-    Test tests[MAX_TESTS];
+    Test simpleTests[SIMPLE_TESTS];
+    Test diffTests[DIFF_TESTS];
     int success = 0;
     int i;
 
@@ -194,24 +207,52 @@ int main(int argc, char *argv[]) {
         /* testing */
         if (choice == 0) {
 
+            printf("\n-------------------------");   
+            printf("\n===   TESTS SIMPLE    ===\n");
+            printf("-------------------------\n"); 
             /* simple calc tests*/
-            init_SimpleTests(tests);
+            init_SimpleTests(simpleTests);
             
-            for (i=0;i<MAX_TESTS;i++) {
+            for (i=0;i<SIMPLE_TESTS;i++) {
                 suppressPrint();
-                process_equation(tests[i].eqn, tests[i].type, tokens); 
+                process_equation(simpleTests[i].eqn, simpleTests[i].type, tokens); 
                 unsuppressPrint();  
                 ast = buildAST(tokens, choice);
 
                 if (!ast) {
-                    printf("Error: Failed to build AST for test %d: %s\n", i, tests[i].eqn);
+                    printf("Error: Failed to build AST for test %d: %s\n", i, simpleTests[i].eqn);
                     continue;
                 }
 
                 simpleCalc(ast, &result);
                 
                 /* Verify if the calculated result is correct */
-                if (verifyTest(tests[i], result, i) == 0) {
+                if (verifyTest(simpleTests[i], result, NULL, i) == 0) {
+                    success += 1;
+                }
+            }
+
+            printf("\n-------------------------");   
+            printf("\n===    TESTS DIFF     ===\n");
+            printf("-------------------------\n"); 
+            /* differentiate tests */
+            init_DiffTests(diffTests);
+            
+            for (i=0;i<DIFF_TESTS;i++) {
+                suppressPrint();
+                process_equation(diffTests[i].eqn, diffTests[i].type, tokens); 
+                unsuppressPrint();  
+                ast = buildAST(tokens, choice);
+
+                if (!ast) {
+                    printf("Error: Failed to build AST for test %d: %s\n", i, diffTests[i].eqn);
+                    continue;
+                }
+
+                differentiation(ast, &derivative, &x, &y_val, &dy_val, 2);
+                
+                /* Verify if the calculated result is correct */
+                if (verifyTest(diffTests[i], dy_val, derivative, i) == 0) {
                     success += 1;
                 }
             }
