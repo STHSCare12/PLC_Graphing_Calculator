@@ -136,19 +136,23 @@ When you run the program, you will see:
 
 ---
 ## Notes
-### Supported operators
+### Supported Operators
 ```text
-+
--
-*
-/
-^
++   Addition
+-   Subtraction
+*   Multiplication
+/   Division
+^   Power
 ```
-### Supported functions
+### Supported Functions
 ```text
-sin
-cos
-tan
-exp
-log
+sin   Sine
+cos   Cosine
+tan   Tangent
+exp   Exponential
+log   Logarithm
+```
+### Variable Support
+```text
+x   Single variable (used in Mode 2 and Mode 3)
 ```
