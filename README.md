@@ -48,6 +48,17 @@ mingw32-make
 Note: `make` builds the program using instructions defined in the Makefile.
 
 ### 3. Run the program:
+The program supports:
+- stdin mode (interactive input)
+- CSV file mode (batch input)
+
+---
+## Input Modes
+The program supports two types of input:
+
+### 1. Standard Input (stdin)
+Run the program without arguments:
+
 **macOS / Linux**
 ```bash
 ./calculator
@@ -57,6 +68,31 @@ Note: `make` builds the program using instructions defined in the Makefile.
 ```bash
 .\calculator
 ```
+The program will prompt the user to enter expressions manually.
+
+### 2. CSV File Input
+Run the program with a `.csv` file as an argument:
+
+**macOS / Linux**
+```bash
+./calculator eq.csv
+```
+
+**Windows**
+```bash
+.\calculator eq.csv
+```
+Each line in the CSV file can contain one or more expressions separated by commas.
+
+### CSV Format Example
+```text
+3*x+2, sin(x), x^2+1
+x^4+1
+4*x+2, cos(x)
+```
+- Each row = one line in the CSV file
+- Expressions are separated by commas
+- Each expression is evaluated independently
 
 ---
 ## Instruction Menu
